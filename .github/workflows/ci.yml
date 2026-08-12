@@ -24,7 +24,7 @@ jobs:
       - name: Build and Test iOS Package
         run: |
           xcodebuild test \
-            -scheme AFNavigationKit-Package \
+            -scheme AFNavigationKit \
             -sdk iphonesimulator \
             -destination 'platform=iOS Simulator,name=iPhone 16,OS=18.0' \
             -verbose
