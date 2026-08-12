@@ -1,0 +1,32 @@
+name: Continuous Delivery (Manual Release)
+
+on:
+  push:
+    # This pipeline only fires when you manually push a version tag
+    tags:
+      - 'v*'
+
+jobs:
+  publish-release:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Final safety check: Make sure the tagged code actually passes all tests
+      - name: Run Final Tests
+        run: |
+          swift build
+          swift test
+
+      # Create the official GitHub Release page using your tag name
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          generate_release_notes: true # GitHub will automatically summarize your commits here
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
