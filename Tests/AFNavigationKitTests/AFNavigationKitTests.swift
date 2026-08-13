@@ -65,6 +65,28 @@ final class AFNavigationKitTests: XCTestCase {
         
         XCTAssertEqual(coordinator.path, targetPath, "Deeplink must completely overwrite the existing path stack.")
     }
+
+    func test_coordinator_pop_removesLastRoute() {
+        let coordinator = PageCoord()
+        coordinator.deeplink([.home, .settings])
+
+        XCTAssertEqual(coordinator.path, [.home, .settings], "Deeplink should have set path to 'home' and 'settings'")
+    
+        coordinator.pop()
+    
+        XCTAssertEqual(coordinator.path, [.home], "Pop should have removed the last route, which was 'settings'")
+    }
+
+    func test_coordinator_popToRoot_clearsPath() {
+        let coordinator = PageCoord()
+        coordinator.deeplink([.home, .settings])
+
+        XCTAssertEqual(coordinator.path, [.home, .settings], "Deeplink should have set path to 'home' and 'settings'")
+    
+        coordinator.popToRoot()
+    
+        XCTAssertEqual(coordinator.path, [], "Pop should have cleared the path")
+    }
     
     func test_coordinator_presentFullscreen_setsProperty() {
         let coordinator = FullscreenCoord()

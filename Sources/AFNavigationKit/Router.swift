@@ -31,6 +31,14 @@ public extension PageRouter where Page: ValidRoute {
     func deeplink(_ path: [Page]) {
         self.path = path
     }
+
+    func pop() {
+        self.path.removeLast()
+    }
+
+    func popToRoot() {
+        self.path = []
+    }
 }
 
 // MARK: - FullscreenRouter
