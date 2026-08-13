@@ -95,6 +95,17 @@ final class AFNavigationKitTests: XCTestCase {
         
         XCTAssertEqual(coordinator.fullscreen, .home, "Coordinator present(fullscreen:) should assign 'home' to fullscreen property.")
     }
+
+    func test_coordinator_dismissFullscreen_setsPropertyToNil() {
+        let coordinator = FullscreenCoord()
+        coordinator.present(fullscreen: .home)
+        
+        XCTAssertEqual(coordinator.fullscreen, .home, "Coordinator present(fullscreen:) should assign 'home' to fullscreen property.")
+
+        coordinator.dismissFullscreen()
+
+        XCTAssertNil(coordinator.fullscreen, "Dismissal should have cleared fullscreen property and set to nil")
+    }
     
     func test_coordinator_presentSheet_setsProperty() {
         let coordinator = SheetCoord()
@@ -102,6 +113,17 @@ final class AFNavigationKitTests: XCTestCase {
         coordinator.present(sheet: .settings)
         
         XCTAssertEqual(coordinator.sheet, .settings, "Coordinator present(sheet:) should assign 'setting' to sheet property.")
+    }
+
+    func test_coordinator_dismissSheet_setsPropertyToNil() {
+        let coordinator = SheetCoord()
+        coordinator.present(sheet: .home)
+        
+        XCTAssertEqual(coordinator.sheet, .home, "Coordinator present(sheet:) should assign 'home' to sheet property.")
+
+        coordinator.dismissSheet()
+
+        XCTAssertNil(coordinator.sheet, "Dismissal should have cleared sheet property and set to nil")
     }
 
     func test_factory_returnsConfiguredSwiftUIView() {

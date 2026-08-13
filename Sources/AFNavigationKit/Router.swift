@@ -61,6 +61,10 @@ public extension FullscreenRouter where Fullscreen: ValidRoute {
     func present(fullscreen: Fullscreen) {
         self.fullscreen = fullscreen
     }
+
+    func dismissFullscreen() {
+        fullscreen = nil
+    }
 }
 
 // MARK: - SheetRouter
@@ -82,5 +86,9 @@ public protocol SheetRouter: AnyObject {
 public extension SheetRouter where Sheet: ValidRoute {
     func present(sheet: Sheet) {
         self.sheet = sheet
+    }
+
+    func dismissSheet() {
+        sheet = nil
     }
 }
