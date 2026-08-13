@@ -26,3 +26,10 @@ public final class Coordinator<Page: Routable, Fullscreen: Routable, Sheet: Rout
 
     public init() {}
 }
+
+extension Coordinator where Fullscreen:ValidRoute, Sheet: ValidRoute {
+    public func dismissAll() {
+        dismissFullscreen()
+        dismissSheet()
+    }
+}
