@@ -8,28 +8,152 @@
 <br>
 [![Documentation](https://img.shields.io/badge/-DocC%20Documentation-FFA500?logo=apple)](https://lisa-appfellows.github.io/AFNavigationKit/documentation/afnavigationkit/)
 
+A lightweight SwiftUI navigation kit for isolating routing logic from your view layer. Define typed routes, opt into the navigation paths you need, and present pages, fullscreen covers, and sheets through a single generic coordinator.
+
+This package is published for personal use and convenience. It is not a supported product, and ongoing maintenance is not guaranteed.
+
+**Version:** 1.0.0  
+**Platforms:** iOS 17+, macOS 14+  
+**Swift:** 5.9+
+
+## Installation
+
+Add AFNavigationKit to your project with Swift Package Manager:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/lisa-appfellows/AFNavigationKit.git", from: "1.0.0")
+]
+```
+
+Then add `AFNavigationKit` to your target dependencies.
+
+## Overview
+
+AFNavigationKit separates **what** you navigate to from **how** those destinations are presented. Routes identify destinations. Factories build views. Routers own presentation state. The `Coordinator` ties them together—and lets you disable any path you do not need.
+
+### Routing rules
+
+| Path state | Type | Effect |
+| --- | --- | --- |
+| **Enabled** | Conform to `ValidRoute` | Unlocks the corresponding navigation APIs |
+| **Disabled** | Pass `DisabledRoute` | Hides those navigation APIs from autocomplete |
+
+This pattern keeps coordinators focused: enable only the presentation styles your feature uses.
+
+---
+
 ## Core Feature
 
 ### Routable
-- A protocol requiring `Identifiable` and `Hashable` conformances.
-- A `ValidRoute` protocol that conforms to `Routable` that enables navigation methods.
-- A `DisabledRoute` struct, conforming to `Routable` that hides navigation methods. 
 
-Adding both a valid and disabled state aids conformers when utilizing the generic coordinator, or when creating their own, in allowing them to select which paths they want to apply for. Disabled routes automatically hide navigation methods, allowing for cleaner autocompletes. 
+`Routable` is the base protocol for navigational types. It requires `Identifiable` and `Hashable`. **Do not conform to `Routable` directly.**
+
+| Type | Role |
+| --- | --- |
+| `ValidRoute` | Primary protocol for real destinations. Conforming unlocks navigation extensions. |
+| `DisabledRoute` | Public token representing a disabled path. Pass it as a generic parameter when a coordinator should not support that presentation style. |
+
+```swift
+enum AppRoute: ValidRoute {
+    case home
+    case profile(userId: String)
+    case settings
+
+    var id: String {
+        switch self {
+        case .home: return "home"
+        case .profile(let userId): return "profile_\(userId)"
+        case .settings: return "settings"
+        }
+    }
+}
+```
 
 ### RouteFactory
-- A protocol that builds a view for a given `ValidRoute`.
 
-Enables different valid routes (Page, Fullscreen, or Sheet) to have their own creation factories, and decouples creation from identification.
+A protocol that builds a SwiftUI view for a given `ValidRoute`. Each route family (page, fullscreen, or sheet) can have its own factory, keeping view creation decoupled from route identification.
+
+| Associated type | Purpose |
+| --- | --- |
+| `Route` | The destination type; must conform to `ValidRoute` |
+| `Content` | The SwiftUI view produced for that route |
+
+```swift
+struct AppRouteFactory: RouteFactory {
+    @ViewBuilder
+    static func createView(for route: AppRoute) -> some View {
+        switch route {
+        case .home: HomeView()
+        case .profile(let userId): ProfileView(userId: userId)
+        case .settings: SettingsView()
+        }
+    }
+}
+```
 
 ### Router
-- `PageRouter`: A protocol for page routing that requires a path for a chosen route. Routes can be valid or disabled routes, but the corresponding default navigation method is hidden for non `ValidRoute` types.
-- `FullscreenRouter': A protocol for fullscreen presentations. Requires an optional fullscreen property. Routes can also be value or disabled, but the navigation method is hidden from non `ValidRoute` types.
-- `SheetRouter`: A protocol for sheet presentations. Requires an optional sheet property. Routes can also be value or disabled, but the navigation method is hidden from non `ValidRoute` types.
 
-By separating types of navigations into their own router protocols, the `Coordinator` is able to pick and choose which navigation paths it will hold based on user settings.
+Presentation is split into three protocols so a coordinator can opt into only the paths it needs:
+
+| Protocol | State | Navigation API (when route is `ValidRoute`) |
+| --- | --- | --- |
+| `PageRouter` | `path: [Page]` | `push(page:)`, `deeplink(_:)` |
+| `FullscreenRouter` | `fullscreen: Fullscreen?` | `present(fullscreen:)` |
+| `SheetRouter` | `sheet: Sheet?` | `present(sheet:)` |
+
+Routes on each router may be a `ValidRoute` or `DisabledRoute`. Default navigation methods appear only for `ValidRoute` types, which keeps autocomplete clean when a path is turned off.
 
 ### Coordinator
-- A generic `@Observable` class, conforming to `PageRouter`, `FullscreenRouter`, and `SheetRouter`. 
 
-The generic parameters allow users to apply a conforming ValidRoute to enable the route or the `DisabledRoute` struct to disable the route.
+An `@Observable` class that conforms to `PageRouter`, `FullscreenRouter`, and `SheetRouter`. Use it to keep routing state out of your SwiftUI views.
+
+Generic parameters select which paths are active:
+
+| Parameter | Meaning |
+| --- | --- |
+| `Page` | Destinations on the root navigation stack |
+| `Fullscreen` | Fullscreen cover destinations |
+| `Sheet` | Sheet destinations |
+
+Pass a `ValidRoute`-conforming type to enable a path, or `DisabledRoute` to disable it.
+
+```swift
+// Pages only
+typealias PageOnlyCoordinator = Coordinator<AppRoute, DisabledRoute, DisabledRoute>
+
+// Pages + sheets
+typealias PageAndSheetCoordinator = Coordinator<AppRoute, DisabledRoute, AppRoute>
+
+// All presentation styles
+typealias AppCoordinator = Coordinator<AppRoute, AppRoute, AppRoute>
+```
+
+```swift
+let coordinator = PageOnlyCoordinator()
+
+coordinator.push(page: .home)
+coordinator.push(page: .profile(userId: "42"))
+coordinator.deeplink([.settings, .profile(userId: "42")])
+```
+
+When a path is enabled:
+
+```swift
+coordinator.present(fullscreen: .settings)
+coordinator.present(sheet: .profile(userId: "42"))
+```
+
+---
+
+## Documentation
+
+Full API documentation is available via DocC:
+
+[AFNavigationKit Documentation](https://lisa-appfellows.github.io/AFNavigationKit/documentation/afnavigationkit/)
+
+## License
+
+Copyright © 2026 Lisa Fellows. All rights reserved.
+
+AFNavigationKit is a personal library. You may use it in compiled/imported form in personal and commercial apps under the terms of the [LICENSE](LICENSE) (EULA). Source redistribution, modification, and derivative works are not permitted. The software is provided as-is, without warranty, and without any promise of continued support or maintenance.
