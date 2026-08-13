@@ -126,6 +126,20 @@ final class AFNavigationKitTests: XCTestCase {
         XCTAssertNil(coordinator.sheet, "Dismissal should have cleared sheet property and set to nil")
     }
 
+    func test_coordinator_dismissAll_setsFullscreenAndSheetToNil() {
+        let coordinator = Coordinator<MockRoute, MockRoute, MockRoute>()
+        coordinator.present(sheet: .home)
+        coordinator.present(fullscreen: .settings)
+
+        XCTAssertEqual(coordinator.sheet, .home, "Sheet should have been set to 'home")
+        XCTAssertEqual(coordinator.fullscreen, .settings, "Fullscreen should have been set to 'settings")
+
+        coordinator.dismissAll()
+
+        XCTAssertNil(coordinator.sheet, "DismissAll should have cleared sheet and set to nil")
+        XCTAssertNil(coordinator.fullscreen, "DismissAll should have cleared fullscreen and set to nil")
+    }
+
     func test_factory_returnsConfiguredSwiftUIView() {
         let view = MockFactory.createView(for: .home)
         XCTAssertNotNil(view, "The factory must compile and return a valid structural SwiftUI layout output.")
