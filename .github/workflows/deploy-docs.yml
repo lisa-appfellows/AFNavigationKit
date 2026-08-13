@@ -47,7 +47,7 @@ jobs:
             generate-documentation \
             --disable-indexing \
             --transform-for-static-hosting \
-            --hosting-base-path ${{ steps.repo-name.outputs.name }} \
+            --hosting-base-path "AFNavigationKit" \
             --output-path ./docs
 
       - name: Upload Build Artifacts
