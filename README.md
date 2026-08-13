@@ -6,7 +6,12 @@
 ![CD Status](https://github.com/lisa-appfellows/AFNavigationKit/actions/workflows/cd.yml/badge.svg)
 <br>
 <br>
-[![Documentation](https://img.shields.io/badge/-DocC%20Documentation-FFA500?logo=apple)](https://lisa-appfellows.github.io/AFNavigationKit/documentation/afnavigationkit/)
+[![License: Proprietary EULA](https://img.shields.io/badge/License-Proprietary%20EULA-red.svg)](https://github.com/lisa-appfellows/AFNavigationKit/blob/main/LICENSE)
+<br>
+<br>
+[![Documentation](https://img.shields.io/badge/DocC-Documentation-FFA500?logo=apple)](https://lisa-appfellows.github.io/AFNavigationKit/documentation/afnavigationkit/)
+<br>
+<br>
 
 A lightweight SwiftUI navigation kit for isolating routing logic from your view layer. Define typed routes, opt into the navigation paths you need, and present pages, fullscreen covers, and sheets through a single generic coordinator.
 
