@@ -4,6 +4,9 @@
 <br>
 <br>
 ![CD Status](https://github.com/lisa-appfellows/AFNavigationKit/actions/workflows/cd.yml/badge.svg)
+<br>
+<br>
+[![Documentation](https://img.shields.io/badge/-DocC%20Documentation-FFA500?logo=apple)](https://lisa-appfellows.github.io/AFNavigationKit/documentation/afnavigationkit/)
 
 ## Core Feature
 
