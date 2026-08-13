@@ -1,19 +1,32 @@
 import SwiftUI
 
-/// A unified coordinator for managing navigation paths alongside modal sheets and fullscreen covers.
+/// A unified navigation coordinator for a push stack, fullscreen covers, and sheets.
 ///
-/// Use this coordinator to isolate routing logic out of your SwiftUI view layer.
-/// To disable specific presentation workflows, simply pass `DisabledRoute` as the target generic type.
+/// Construct instances with ``NewCoordinator`` rather than calling the initializer directly.
+/// Enable only the flows you need; each unconfigured slot stays ``DisabledRoute`` and hides that
+/// flow’s navigation methods.
+///
+/// ```swift
+/// let coordinator = NewCoordinator()
+///     .addPageRouting(AppPage.self)
+///     .addSheetRouting(AppSheet.self)
+///     .build()
+///
+/// coordinator.push(page: .home)
+/// coordinator.present(sheet: .settings)
+/// // fullscreen APIs are unavailable — that slot is DisabledRoute
+/// ```
+///
+/// ### Route slots
+/// - **Enabled:** Pass a ``ValidRoute`` via the builder to unlock that flow’s router APIs.
+/// - **Disabled:** Leave the slot unconfigured (or use ``DisabledRoute``) to hide those APIs.
 ///
 /// - Parameters:
-///   - Page: The type representing pages navigated inside the main root stack.
-///   - Fullscreen: The type representing modally presented fullscreen covers.
-///   - Sheet: The type representing modally presented sheets.
+///   - Page: Pages pushed on the root navigation stack.
+///   - Fullscreen: Fullscreen covers presented modally.
+///   - Sheet: Sheets presented modally.
 ///
-/// ### Routing Rules
-/// - **Enabled Path:** Use `ValidRoute` when a navigation path is desired. Unlocks corresponding navigation extensions.
-/// - **Disabled Path:** Use `DisabledRoute` when a navigation path is disabled. Hides corresponding navigation extensions.
-
+/// - SeeAlso: ``NewCoordinator``, ``CoordinatorBuilder``, ``PageRouter``, ``FullscreenRouter``, ``SheetRouter``
 @Observable
 public final class Coordinator<Page: Routable, Fullscreen: Routable, Sheet: Routable>: PageRouter, FullscreenRouter, SheetRouter {
     public typealias Page = Page
@@ -24,10 +37,14 @@ public final class Coordinator<Page: Routable, Fullscreen: Routable, Sheet: Rout
     public var fullscreen: Fullscreen?
     public var sheet: Sheet?
 
-    public init() {}
+    /// Creates an unconfigured coordinator.
+    ///
+    /// Prefer ``NewCoordinator`` so route slots are selected through the type-safe builder chain.
+    init() {}
 }
 
 extension Coordinator where Fullscreen:ValidRoute, Sheet: ValidRoute {
+    /// Dismisses any presented fullscreen cover and sheet.
     public func dismissAll() {
         dismissFullscreen()
         dismissSheet()
