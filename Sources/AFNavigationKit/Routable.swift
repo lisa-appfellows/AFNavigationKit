@@ -20,7 +20,7 @@ public protocol Routable: Identifiable, Hashable {}
 public protocol ValidRoute: Routable {}
 
 /// A public token used to represent a disabled navigational route.
-/// Use this type parameter inside Coordinators when you wishe to disable a route.
+/// Use this type parameter inside Coordinators when you wish to disable a route.
 public struct DisabledRoute: Routable {
     public var id: String { "RoutingKit.DisabledRoute" }
     private init() {}
