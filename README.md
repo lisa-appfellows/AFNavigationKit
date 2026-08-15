@@ -171,7 +171,7 @@ coordinator.present(alert: alert)
 
 ```swift
 SomeView()
-    .openAlert($coordinator)
+    .openAlert(coordinator)
 ```
 
 ---
