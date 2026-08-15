@@ -10,15 +10,19 @@ import SwiftUI
 extension View {
     /// Presents alerts driven by an ``AlertPresenter``.
     ///
-    /// - Parameter presenter: A binding to an object conforming to ``AlertPresenter``.
-    public func openAlert(_ presenter: Binding<any AlertPresenter>) -> some View {
+    /// - Parameter presenter: An object conforming to ``AlertPresenter``.
+    public func openAlert<Presenter: AlertPresenter>(_ presenter: Presenter) -> some View {
         modifier(OpenAlertModifier(presenter: presenter))
     }
 }
 
 /// A view modifier that presents the presenter's ``AlertPresenter/activeAlert`` using SwiftUI's `alert` API.
-public struct OpenAlertModifier: ViewModifier {
-    @Binding var presenter: any AlertPresenter
+public struct OpenAlertModifier<Presenter: AlertPresenter>: ViewModifier {
+    private let presenter: Presenter
+
+    public init(presenter: Presenter) {
+        self.presenter = presenter
+    }
 
     public func body(content: Content) -> some View {
         content
