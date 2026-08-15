@@ -12,21 +12,16 @@ final class AlertTests: XCTestCase {
     func test_alertActions() {
         var primaryExecuted = false
         var secondaryExecuted = false
-
-        let primaryAction = AlertAction(title: "Primary Action", role: .none) {
+        
+        let primary = Mocks.createAlertAction {
             primaryExecuted = true
         }
 
-        let secondaryAction = AlertAction(title: "Secondary Action", role: .none) {
+        let secondary = Mocks.createAlertAction {
             secondaryExecuted = true
         }
 
-        let alert = AlertContext(
-            title: "Mock Alert",
-            message: "This is a mock alert",
-            primaryAction: primaryAction,
-            secondaryAction: secondaryAction
-        )
+        let alert = Mocks.createAlertModel(primaryAction: primary, secondaryAction: secondary)
 
         alert.primaryAction.action()
         alert.secondaryAction?.action()

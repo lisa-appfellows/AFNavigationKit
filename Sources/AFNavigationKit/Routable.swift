@@ -11,8 +11,8 @@ import Foundation
 /// Conformers should not conform to this protocol directly.
 ///
 /// ### Routing Rules
-/// - **Enabled Path:** Use `ValidRoute` when a navigation path is desired. Unlocks corresponding navigation extensions.
-/// - **Disabled Path:** Use `DisabledRoute` when a navigation path is disabled. Hides corresponding navigation extensions.
+/// - **Enabled Path:** Use ``ValidRoute`` when a navigation path is desired. Unlocks corresponding navigation extensions.
+/// - **Disabled Path:** Use ``DisabledRoute`` when a navigation path is disabled. Hides corresponding navigation extensions.
 public protocol Routable: Identifiable, Hashable {}
 
 /// The primary protocol for users to conform their navigational points to.

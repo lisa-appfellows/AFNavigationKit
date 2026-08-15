@@ -63,3 +63,29 @@ struct DetectableView: View {
         Text("Hello, world")
     }
 }
+
+// MARK: - AlertContext
+
+enum Mocks {
+    static func createAlertAction(
+        title: String = "Alert Action",
+        role: ButtonRole? = nil,
+        action: @escaping () -> Void
+    ) -> AlertAction {
+        .init(title: title, role: role, action: action)
+    }
+
+    static func createAlertModel(
+        title: String = "Mock Alert",
+        message: String = "This is a mock alert",
+        primaryAction: AlertAction,
+        secondaryAction: AlertAction? = nil
+    ) -> AlertModel {
+        .init(
+            title: title,
+            message: message,
+            primaryAction: primaryAction,
+            secondaryAction: secondaryAction
+        )
+    }
+}

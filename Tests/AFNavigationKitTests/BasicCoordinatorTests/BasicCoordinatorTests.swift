@@ -1,8 +1,8 @@
 import XCTest
 @testable import AFNavigationKit
 
-final class CoordinatorTests: XCTestCase {
-    private var coordinator: Coordinator<MockPage, MockCover, MockSheet>!
+final class BasicCoordinatorTests: XCTestCase {
+    private var coordinator: BasicCoordinator<MockPage, MockCover, MockSheet>!
 
     override func setUp() {
         super.setUp()
@@ -11,11 +11,11 @@ final class CoordinatorTests: XCTestCase {
 
     func test_coordinatorFullSetup_hasAssignedAppropriateTypes() {
         coordinator.push(page: .home)
-        coordinator.present(fullscreen: .article(slug: "123"))
+        coordinator.present(cover: .article(slug: "123"))
         coordinator.present(sheet: .colorTheme)
 
         XCTAssertEqual(coordinator.path.last, MockPage.home, "On push should have assigned as MockPage.home")
-        XCTAssertEqual(coordinator.fullscreen, MockCover.article(slug: "123"), "On present(fullscreen:) should have assigned MockCover.article(123)")
+        XCTAssertEqual(coordinator.cover, MockCover.article(slug: "123"), "On present(cover:) should have assigned MockCover.article(123)")
         XCTAssertEqual(coordinator.sheet, MockSheet.colorTheme, "On present(sheet:) should have assigned MockSheet.colorTheme")
     }
 }

@@ -15,16 +15,16 @@ final class RouteFactoryTests: XCTestCase {
         let createdView = MockFactory<MockPage>.createView(for: route)
         let detectableView = createdView as? DetectableView
 
-        XCTAssertEqual(detectableView?.routeId, route.id)
+        XCTAssertEqual(detectableView?.routeId, route.id, "Should have passed along page id to view")
     }
 
-    func test_fullscreenRoute_didCreateView() {
+    func test_coverRoute_didCreateView() {
         let route = MockCover.article(slug: "this-article")
 
         let createdView = MockFactory<MockCover>.createView(for: route)
         let detectableView = createdView as? DetectableView
 
-        XCTAssertEqual(detectableView?.routeId, route.id)
+        XCTAssertEqual(detectableView?.routeId, route.id, "Should have passed along cover id to view")
     }
 
     func test_sheetRoute_didCreateView() {
@@ -33,6 +33,6 @@ final class RouteFactoryTests: XCTestCase {
         let createdView = MockFactory<MockSheet>.createView(for: route)
         let detectableView = createdView as? DetectableView
 
-        XCTAssertEqual(detectableView?.routeId, route.id)
+        XCTAssertEqual(detectableView?.routeId, route.id, "Should have passed along sheet id to view")
     }
 }

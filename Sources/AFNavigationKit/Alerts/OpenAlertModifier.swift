@@ -8,14 +8,15 @@
 import SwiftUI
 
 extension View {
-    /// A trigger modifier to display alerts with a given alert context.
+    /// Presents alerts driven by an ``AlertPresenter``.
     ///
-    /// - Parameter presenter: A Bound object conforming to ``AlertPresenter``
+    /// - Parameter presenter: A binding to an object conforming to ``AlertPresenter``.
     public func openAlert(_ presenter: Binding<any AlertPresenter>) -> some View {
         modifier(OpenAlertModifier(presenter: presenter))
     }
 }
 
+/// A view modifier that presents the presenter's ``AlertPresenter/activeAlert`` using SwiftUI's `alert` API.
 public struct OpenAlertModifier: ViewModifier {
     @Binding var presenter: any AlertPresenter
 
@@ -23,10 +24,7 @@ public struct OpenAlertModifier: ViewModifier {
         content
             .alert(
                 presenter.activeAlert?.title ?? "",
-                isPresented: Binding(
-                    get: { presenter.activeAlert != nil },
-                    set: { isPresented in if !isPresented { presenter.activeAlert = nil } }
-                ),
+                isPresented: presenter.boundIsPresented,
                 presenting: presenter.activeAlert
             ) { alert in
                 Button(alert.primaryAction.title, role: alert.primaryAction.role) {

@@ -1,5 +1,5 @@
 //
-//  AlertContext.swift
+//  AlertModel.swift
 //
 //
 //  Created by Lisa Fellows on 2026-08-14.
@@ -9,13 +9,8 @@ import SwiftUI
 
 /// A model for constructing an alert presentation.
 ///
-/// - Parameters:
-///     - id: A self-generated UUID
-///     - title: The alert's title
-///     - message: The alert's message
-///     - primaryAction: A model for the primary alert button (see ``AlertAction``)
-///     - secondaryAction: An optional model for a secondary alert button (see ``AlertAction``)
-public struct AlertContext: Identifiable {
+/// The ``id`` is generated automatically. Provide a title, message, and at least a primary ``AlertAction``.
+public struct AlertModel: Identifiable, Equatable {
     public let id = UUID()
     public let title: String
     public let message: String
@@ -33,9 +28,13 @@ public struct AlertContext: Identifiable {
         self.primaryAction = primaryAction
         self.secondaryAction = secondaryAction
     }
+
+    public static func == (lhs: AlertModel, rhs: AlertModel) -> Bool {
+        lhs.id == rhs.id
+    }
 }
 
-/// A model for constructing an alert button.
+/// A model for an alert button title, optional role, and action.
 public struct AlertAction {
     public let title: String
     public let role: ButtonRole?
