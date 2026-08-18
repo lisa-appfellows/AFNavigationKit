@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 /// A basic protocol for an object handling navigation paths.
 ///
 /// Use when complex navigation logic is not needed.
@@ -41,7 +40,10 @@ extension BasicPageRouter where Page: ValidRoute {
     }
 
     /// Removes the last page from the navigation path.
+    ///
+    /// If the path is empty, this method does nothing.
     public func pop() {
+        guard !path.isEmpty else { return }
         path.removeLast()
     }
 

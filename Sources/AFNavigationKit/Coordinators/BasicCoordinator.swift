@@ -1,3 +1,10 @@
+//
+//  BasicCoordinator.swift
+//
+//
+//  Created by Lisa Fellows on 2026-08-14.
+//
+
 import SwiftUI
 
 /// A basic coordinator for managing navigation paths alongside modal sheets, fullscreen covers, and alerts.
