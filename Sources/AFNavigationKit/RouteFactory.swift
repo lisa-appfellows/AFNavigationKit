@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-/// A protocol representing a view-creating factory for a specific type of `ValidRoute`.
+/// A protocol representing a view-creating factory for a specific type of ``ValidRoute``.
 ///
 /// ### Associated Types
-/// - **Route:** The type representing a navigation point. Must conform to `ValidRoute`.
-/// - **Content:**  The abstract view to be created for any `ValidRoute`.
+/// - **Route:** The type representing a navigation point. Must conform to ``ValidRoute``.
+/// - **Content:** The SwiftUI view created for a given ``Route``.
 public protocol RouteFactory {
     associatedtype Route: ValidRoute
     associatedtype Content: View

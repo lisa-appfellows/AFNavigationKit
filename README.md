@@ -13,11 +13,11 @@
 <br>
 <br>
 
-A lightweight SwiftUI navigation kit for isolating routing logic from your view layer. Define typed routes, opt into the navigation paths you need, and present pages, fullscreen covers, and sheets through a single generic coordinator.
+A lightweight SwiftUI navigation kit for isolating routing logic from your view layer. Define typed routes, opt into the navigation paths you need, and present pages, fullscreen covers, sheets, and alerts through a single generic coordinator.
 
 This package is published for personal use and convenience. It is not a supported product, and ongoing maintenance is not guaranteed.
 
-**Version:** 1.0.0  
+**Version:** 2.0.0  
 **Platforms:** iOS 17+, macOS 14+  
 **Swift:** 5.9+
 
@@ -27,7 +27,7 @@ Add AFNavigationKit to your project with Swift Package Manager:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/lisa-appfellows/AFNavigationKit.git", from: "1.0.0")
+    .package(url: "https://github.com/lisa-appfellows/AFNavigationKit.git", from: "2.0.0")
 ]
 ```
 
@@ -35,7 +35,7 @@ Then add `AFNavigationKit` to your target dependencies.
 
 ## Overview
 
-AFNavigationKit separates **what** you navigate to from **how** those destinations are presented. Routes identify destinations. Factories build views. Routers own presentation state. The `Coordinator` ties them together—and lets you disable any path you do not need.
+AFNavigationKit separates **what** you navigate to from **how** those destinations are presented. Routes identify destinations. Factories build views. Routers own presentation state. `BasicCoordinator` ties them together—and lets you disable any path you do not need.
 
 ### Routing rules
 
@@ -48,7 +48,7 @@ This pattern keeps coordinators focused: enable only the presentation styles you
 
 ---
 
-## Core Feature
+## Core Features
 
 ### Routable
 
@@ -77,7 +77,7 @@ enum AppRoute: ValidRoute {
 
 ### RouteFactory
 
-A protocol that builds a SwiftUI view for a given `ValidRoute`. Each route family (page, fullscreen, or sheet) can have its own factory, keeping view creation decoupled from route identification.
+A protocol that builds a SwiftUI view for a given `ValidRoute`. Each route family (page, cover, or sheet) can have its own factory, keeping view creation decoupled from route identification.
 
 | Associated type | Purpose |
 | --- | --- |
@@ -97,41 +97,41 @@ struct AppRouteFactory: RouteFactory {
 }
 ```
 
-### Router
+### Routers
 
-Presentation is split into three protocols so a coordinator can opt into only the paths it needs:
+Presentation is split into protocols so a coordinator can opt into only the paths it needs:
 
 | Protocol | State | Navigation API (when route is `ValidRoute`) |
 | --- | --- | --- |
-| `PageRouter` | `path: [Page]` | `push(page:)`, `deeplink(_:)` |
-| `FullscreenRouter` | `fullscreen: Fullscreen?` | `present(fullscreen:)` |
-| `SheetRouter` | `sheet: Sheet?` | `present(sheet:)` |
+| `BasicPageRouter` | `path: [Page]` | `push(page:)`, `pop()`, `popToRoot()` |
+| `BasicCoverRouter` | `cover: Cover?` | `present(cover:)`, `dismissCover()` |
+| `BasicSheetRouter` | `sheet: Sheet?` | `present(sheet:)`, `dismissSheet()` |
 
 Routes on each router may be a `ValidRoute` or `DisabledRoute`. Default navigation methods appear only for `ValidRoute` types, which keeps autocomplete clean when a path is turned off.
 
-### Coordinator
+### BasicCoordinator
 
-An `@Observable` class that conforms to `PageRouter`, `FullscreenRouter`, and `SheetRouter`. Use it to keep routing state out of your SwiftUI views.
+An `@Observable` class that conforms to `BasicPageRouter`, `BasicCoverRouter`, `BasicSheetRouter`, and `AlertPresenter`. Use it for basic navigation when complex routing logic is not needed.
 
 Generic parameters select which paths are active:
 
 | Parameter | Meaning |
 | --- | --- |
 | `Page` | Destinations on the root navigation stack |
-| `Fullscreen` | Fullscreen cover destinations |
+| `Cover` | Fullscreen cover destinations |
 | `Sheet` | Sheet destinations |
 
 Pass a `ValidRoute`-conforming type to enable a path, or `DisabledRoute` to disable it.
 
 ```swift
 // Pages only
-typealias PageOnlyCoordinator = Coordinator<AppRoute, DisabledRoute, DisabledRoute>
+typealias PageOnlyCoordinator = BasicCoordinator<AppRoute, DisabledRoute, DisabledRoute>
 
 // Pages + sheets
-typealias PageAndSheetCoordinator = Coordinator<AppRoute, DisabledRoute, AppRoute>
+typealias PageAndSheetCoordinator = BasicCoordinator<AppRoute, DisabledRoute, AppRoute>
 
 // All presentation styles
-typealias AppCoordinator = Coordinator<AppRoute, AppRoute, AppRoute>
+typealias AppCoordinator = BasicCoordinator<AppRoute, AppRoute, AppRoute>
 ```
 
 ```swift
@@ -139,14 +139,39 @@ let coordinator = PageOnlyCoordinator()
 
 coordinator.push(page: .home)
 coordinator.push(page: .profile(userId: "42"))
-coordinator.deeplink([.settings, .profile(userId: "42")])
+coordinator.pop()
+coordinator.popToRoot()
 ```
 
 When a path is enabled:
 
 ```swift
-coordinator.present(fullscreen: .settings)
+coordinator.present(cover: .settings)
 coordinator.present(sheet: .profile(userId: "42"))
+coordinator.dismissCover()
+coordinator.dismissSheet()
+```
+
+### Alerts
+
+`BasicCoordinator` also conforms to `AlertPresenter`. Present alerts with `AlertModel` / `AlertAction`; incoming alerts queue while one is active. Attach the presenter in SwiftUI with `openAlert(_:)`.
+
+```swift
+let alert = AlertModel(
+    title: "Delete item?",
+    message: "This cannot be undone.",
+    primaryAction: AlertAction(title: "Delete", role: .destructive) {
+        // handle delete
+    },
+    secondaryAction: AlertAction(title: "Cancel", role: .cancel) {}
+)
+
+coordinator.present(alert: alert)
+```
+
+```swift
+SomeView()
+    .openAlert(coordinator)
 ```
 
 ---
