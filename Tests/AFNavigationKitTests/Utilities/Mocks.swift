@@ -64,7 +64,7 @@ struct DetectableView: View {
     }
 }
 
-// MARK: - AlertContext
+// MARK: - Alerts
 
 enum Mocks {
     static func createAlertAction(

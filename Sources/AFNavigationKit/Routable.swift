@@ -22,6 +22,6 @@ public protocol ValidRoute: Routable {}
 /// A public token used to represent a disabled navigational route.
 /// Use this type parameter inside Coordinators when you wish to disable a route.
 public struct DisabledRoute: Routable {
-    public var id: String { "RoutingKit.DisabledRoute" }
+    public var id: String { "AFNavigationKit.DisabledRoute" }
     private init() {}
 }

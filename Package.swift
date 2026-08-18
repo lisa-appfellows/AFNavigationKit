@@ -7,7 +7,6 @@ let package = Package(
     name: "AFNavigationKit",
     platforms: [.iOS(.v17), .macOS(.v14)],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "AFNavigationKit",
             targets: ["AFNavigationKit"]),
@@ -16,8 +15,6 @@ let package = Package(
         .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.0.0"),
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "AFNavigationKit"),
         .testTarget(

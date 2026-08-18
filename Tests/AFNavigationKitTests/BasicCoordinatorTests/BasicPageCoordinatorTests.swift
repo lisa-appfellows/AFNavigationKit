@@ -43,6 +43,12 @@ final class BasicPageCoordinatorTests: XCTestCase {
         XCTAssertEqual(coordinator.path, [.home], "Should have popped settings off of path")
     }
 
+    func test_pop_onEmptyPath_doesNothing() {
+        coordinator.pop()
+
+        XCTAssertTrue(coordinator.path.isEmpty, "Popping an empty path should be a no-op")
+    }
+
     func test_popToRoot_shouldClearPath() {
         coordinator.push(page: .home)
         coordinator.push(page: .settings)

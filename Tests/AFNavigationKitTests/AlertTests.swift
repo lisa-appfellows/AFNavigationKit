@@ -29,4 +29,13 @@ final class AlertTests: XCTestCase {
         XCTAssertTrue(primaryExecuted, "Calling .primaryAction.action should have set primaryExecuted to true")
         XCTAssertTrue(secondaryExecuted, "Calling .secondaryAction.action should have set secondaryExecuted to true")
     }
+
+    func test_alertModels_areEqualByIdentity() {
+        let action = Mocks.createAlertAction {}
+        let first = Mocks.createAlertModel(primaryAction: action)
+        let second = Mocks.createAlertModel(primaryAction: action)
+
+        XCTAssertEqual(first, first, "An alert should be equal to itself")
+        XCTAssertNotEqual(first, second, "Newly constructed alerts should have unique ids")
+    }
 }
